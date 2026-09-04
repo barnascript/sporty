@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: sporty-booker
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: SPORTY_COUNTRY
+        value: ng
+      - key: FEED_PAGES
+        value: "6"
