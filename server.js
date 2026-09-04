@@ -327,5 +327,37 @@ app.post("/api/book", async (req, res) => {
 
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
 
+// Diagnostics: what does SportyBet actually return to this server?
+app.get("/api/debug", async (_req, res) => {
+  const out = { base: BASE, country: COUNTRY };
+  try {
+    const page = await getSportyPage();
+    await page.evaluate((c) => { window.__C = c; }, COUNTRY);
+    out.pageUrl = page.url();
+    try { out.pageTitle = await page.title(); } catch (e) { out.pageTitle = "ERR " + e.message; }
+    const origin = BASE.replace(/\/[a-z]{2}$/, "");
+    const feedPath = `/api/${COUNTRY}/factsCenter/pcUpcomingEvents?sportId=${encodeURIComponent(SPORT_ID)}&marketId=${encodeURIComponent(MARKET_IDS)}&pageSize=100&pageNum=1&option=1&_t=${Date.now()}`;
+    // via Playwright request context
+    try {
+      const r = await page.context().request.get(origin + feedPath, {
+        headers: { accept: "application/json", referer: `${BASE}/sport/football` },
+      });
+      const txt = await r.text();
+      out.reqCtx = { status: r.status(), len: txt.length, sample: txt.slice(0, 300) };
+    } catch (e) { out.reqCtx = "ERR " + e.message; }
+    // via in-page fetch
+    try {
+      out.inPage = await page.evaluate(async (p) => {
+        const r = await fetch(p, { headers: { accept: "application/json" } });
+        const t = await r.text();
+        return { status: r.status, len: t.length, sample: t.slice(0, 300) };
+      }, feedPath);
+    } catch (e) { out.inPage = "ERR " + e.message; }
+  } catch (e) {
+    out.fatal = e.message;
+  }
+  res.json(out);
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`sporty-booker listening on :${PORT}`));
