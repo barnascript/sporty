@@ -3,13 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SportyBet Slip Booker</title>
+<title>Slip Booker</title>
 <style>
-  :root {
-    --bg:#0f1216; --panel:#171b21; --panel2:#1e242c; --line:#2a323c;
-    --text:#e7ecf2; --muted:#9aa7b4; --accent:#22c55e; --accent2:#16a34a;
-    --danger:#ef4444; --warn:#f59e0b; --radius:12px;
-  }
+  :root{--bg:#0f1216;--panel:#171b21;--panel2:#1e242c;--line:#2a323c;--text:#e7ecf2;
+    --muted:#9aa7b4;--accent:#22c55e;--accent2:#16a34a;--danger:#ef4444;--radius:12px}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);
     font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
@@ -17,12 +14,11 @@
   h1{margin:0 0 4px;font-size:20px}
   .sub{color:var(--muted);font-size:13px}
   main{max-width:880px;margin:0 auto;padding:18px}
-  .drop{border:2px dashed var(--line);border-radius:var(--radius);padding:30px 18px;
+  .drop{border:2px dashed var(--line);border-radius:var(--radius);padding:28px 18px;
     text-align:center;background:var(--panel);cursor:pointer;transition:.15s}
   .drop.hover{border-color:var(--accent);background:#16211a}
-  .drop strong{color:var(--accent)}
-  .drop small{display:block;color:var(--muted);margin-top:6px}
-  #preview{max-height:240px;border-radius:10px;margin-top:12px;display:none}
+  .drop strong{color:var(--accent)} .drop small{display:block;color:var(--muted);margin-top:6px}
+  #preview{max-height:220px;border-radius:10px;margin-top:12px;display:none}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
   button{background:var(--panel2);color:var(--text);border:1px solid var(--line);
     padding:9px 14px;border-radius:10px;font-size:14px;cursor:pointer}
@@ -30,126 +26,129 @@
   button.primary{background:var(--accent2);border-color:var(--accent2);color:#fff;font-weight:600}
   button.primary:disabled{opacity:.5;cursor:not-allowed}
   button.ghost{background:transparent}
+  select{background:var(--panel2);color:var(--text);border:1px solid var(--line);
+    padding:8px 10px;border-radius:10px;font-size:14px}
+  label{color:var(--muted);font-size:13px}
   .status{color:var(--muted);font-size:13px;min-height:18px}
   .bar{height:6px;background:var(--panel2);border-radius:6px;overflow:hidden;margin:8px 0;display:none}
   .bar>i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+  .stepwrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;
+    padding:14px;border:1px solid var(--accent2);border-radius:var(--radius);background:#0e1c14}
   table{width:100%;border-collapse:collapse;margin-top:8px}
   th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
   th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
   td input{width:100%;background:var(--panel);color:var(--text);border:1px solid transparent;
     border-radius:8px;padding:6px 8px;font-size:14px}
   td input:focus{border-color:var(--accent);outline:none}
-  .num{width:36px;color:var(--muted)}
+  tr.done td{opacity:.5}
+  .num{width:36px;color:var(--muted)} .act{width:150px;white-space:nowrap}
+  .open{padding:6px 10px;font-size:13px;text-decoration:none;display:inline-block}
   .del{color:var(--danger);border:0;background:transparent;padding:6px 8px;cursor:pointer}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
   .count{color:var(--muted);font-size:13px}
-  .result{margin-top:18px;padding:16px;border:1px solid var(--accent2);border-radius:var(--radius);
-    background:#0e1c14;display:none}
-  .code{font-size:30px;font-weight:800;letter-spacing:2px;color:var(--accent)}
-  .link{word-break:break-all;color:#8fd7ff}
-  .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .unmatched{margin-top:12px;color:var(--warn);font-size:13px}
-  .matched{margin-top:12px;font-size:13px;color:var(--muted)}
-  .matched code{color:var(--text)}
   .note{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.6}
 </style>
 </head>
 <body>
 <header>
-  <h1>⚽ SportyBet Slip Booker</h1>
-  <div class="sub">Upload a tips screenshot → it builds the slip on SportyBet and gives you a booking code. No stake is placed — you confirm.</div>
+  <h1>⚽ Slip Booker</h1>
+  <div class="sub">Upload a tips screenshot → read every pick → open them one tap at a time on your bookmaker to build the slip. Nothing is staked; you confirm each bet yourself.</div>
 </header>
 <main>
   <div id="drop" class="drop">
     <strong>Click, paste (⌘/Ctrl+V), or drop the screenshot</strong>
-    <small>Text is read in your browser. Only the picks (team + market) are sent to the server.</small>
+    <small>Everything runs in your browser — no image or data is uploaded to any server.</small>
     <img id="preview" alt="preview" />
   </div>
 
   <div class="row">
     <button id="read" class="primary" disabled>Read image</button>
+    <label for="book">Bookmaker:</label>
+    <select id="book">
+      <option value="sportybet">SportyBet</option>
+      <option value="bet9ja">Bet9ja</option>
+      <option value="msport">MSport</option>
+      <option value="1xbet">1xBet</option>
+      <option value="betking">BetKing</option>
+      <option value="betway">Betway</option>
+      <option value="google">Google search</option>
+    </select>
     <span class="status" id="status"></span>
   </div>
   <div class="bar" id="bar"><i></i></div>
 
+  <div class="stepwrap" id="stepwrap" hidden>
+    <button id="stepBtn" class="primary">▶ Open pick #1</button>
+    <button id="stepReset" class="ghost">↺ Restart</button>
+    <span class="count" id="stepInfo"></span>
+  </div>
+
   <table id="tbl" hidden>
-    <thead><tr><th class="num">#</th><th>Team</th><th>Market</th><th></th></tr></thead>
+    <thead><tr><th class="num">#</th><th>Team</th><th>Market</th><th class="act"></th></tr></thead>
     <tbody id="rows"></tbody>
   </table>
 
   <div class="toolbar">
     <span class="count" id="count"></span>
     <button id="add" class="ghost" hidden>+ Add row</button>
-    <button id="book" class="primary" hidden>Book on SportyBet →</button>
-  </div>
-
-  <div class="result" id="result">
-    <div class="count">Booking code</div>
-    <div class="code" id="code"></div>
-    <div class="link" id="url"></div>
-    <div class="card-actions">
-      <button id="copyCode" class="ghost">Copy code</button>
-      <button id="copyUrl" class="ghost">Copy link</button>
-      <a id="openUrl" target="_blank" rel="noopener"><button class="primary">Open on SportyBet</button></a>
-    </div>
-    <div class="matched" id="matched"></div>
-    <div class="unmatched" id="unmatched"></div>
+    <button id="copy" class="ghost" hidden>Copy list</button>
+    <button id="csv" class="ghost" hidden>Download CSV</button>
   </div>
 
   <p class="note">
-    A booking code just pre-loads the selections on SportyBet — nothing is staked or confirmed here.
-    Open the link (or type the code into SportyBet's “Load booking code” box), review, and place the bet yourself.
-    Team→fixture matching is best-effort; always check the “matched” list before you place.
+    <b>How it works:</b> the picture is read on your device. Pick your bookmaker, then use
+    <b>“Open pick”</b> to step through — each tap opens that team’s matches on the bookmaker in a new tab,
+    where you add the market shown and it goes onto your slip. When you’ve added them all, the bookmaker’s
+    slip gives you the booking code. No stake is placed here and you confirm every bet yourself.
   </p>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script>
 (function(){
-  const $ = id => document.getElementById(id);
-  const drop=$('drop'), preview=$('preview'), readBtn=$('read'), status=$('status');
-  const bar=$('bar'), barFill=bar.querySelector('i');
-  const tbl=$('tbl'), rowsEl=$('rows'), countEl=$('count');
-  const addBtn=$('add'), bookBtn=$('book');
-  const result=$('result'), codeEl=$('code'), urlEl=$('url'), openUrl=$('openUrl');
-  const matchedEl=$('matched'), unmatchedEl=$('unmatched');
-  let imgData=null, picks=[];
+  const $=id=>document.getElementById(id);
+  const drop=$('drop'),preview=$('preview'),readBtn=$('read'),status=$('status'),bookSel=$('book');
+  const bar=$('bar'),barFill=bar.querySelector('i');
+  const tbl=$('tbl'),rowsEl=$('rows'),countEl=$('count');
+  const addBtn=$('add'),copyBtn=$('copy'),csvBtn=$('csv');
+  const stepWrap=$('stepwrap'),stepBtn=$('stepBtn'),stepReset=$('stepReset'),stepInfo=$('stepInfo');
+  let imgData=null,picks=[],cursor=0;
 
-  function setImage(src){ imgData=src; preview.src=src; preview.style.display='block';
-    readBtn.disabled=false; status.textContent='Ready. Click “Read image”.'; }
-  function handleFile(f){ if(!f||!f.type.startsWith('image/'))return;
-    const r=new FileReader(); r.onload=e=>setImage(e.target.result); r.readAsDataURL(f); }
-  drop.addEventListener('click',()=>{ const i=document.createElement('input');
-    i.type='file'; i.accept='image/*'; i.onchange=()=>handleFile(i.files[0]); i.click(); });
+  // ---- image intake ----
+  function setImage(src){imgData=src;preview.src=src;preview.style.display='block';
+    readBtn.disabled=false;status.textContent='Ready. Click “Read image”.';}
+  function handleFile(f){if(!f||!f.type.startsWith('image/'))return;
+    const r=new FileReader();r.onload=e=>setImage(e.target.result);r.readAsDataURL(f);}
+  drop.addEventListener('click',()=>{const i=document.createElement('input');
+    i.type='file';i.accept='image/*';i.onchange=()=>handleFile(i.files[0]);i.click();});
   ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('hover');}));
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hover');}));
   drop.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));
-  window.addEventListener('paste',e=>{ const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));
-    if(it)handleFile(it.getAsFile()); });
+  window.addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));
+    if(it)handleFile(it.getAsFile());});
 
+  // ---- OCR ----
   readBtn.addEventListener('click',async()=>{
-    if(!imgData)return; readBtn.disabled=true; bar.style.display='block'; result.style.display='none';
-    status.textContent='Loading OCR…';
+    if(!imgData)return;readBtn.disabled=true;bar.style.display='block';status.textContent='Loading OCR…';
     try{
       const {data}=await Tesseract.recognize(imgData,'eng',{logger:m=>{
-        if(m.status==='recognizing text'){ barFill.style.width=Math.round(m.progress*100)+'%';
-          status.textContent='Reading… '+Math.round(m.progress*100)+'%'; }
-        else status.textContent=m.status+'…'; }});
-      picks=parse(data.text); render();
-      status.textContent=picks.length?('Found '+picks.length+' picks. Review, then book.'):'No picks detected.';
-    }catch(e){ status.textContent='OCR failed: '+e.message; }
-    finally{ bar.style.display='none'; barFill.style.width='0'; readBtn.disabled=false; }
+        if(m.status==='recognizing text'){barFill.style.width=Math.round(m.progress*100)+'%';
+          status.textContent='Reading… '+Math.round(m.progress*100)+'%';}
+        else status.textContent=m.status+'…';}});
+      picks=parse(data.text);cursor=0;render();
+      status.textContent=picks.length?('Found '+picks.length+' picks. Pick a bookmaker, then step through.'):'No picks detected — try a clearer image.';
+    }catch(e){status.textContent='OCR failed: '+e.message;}
+    finally{bar.style.display='none';barFill.style.width='0';readBtn.disabled=false;}
   });
 
   function parse(text){
     const out=[];
     text.split(/\r?\n/).forEach(raw=>{
-      let line=raw.replace(/[✅✔️🐐🔟®©]/g,'').trim();
-      if(!line)return;
+      let line=raw.replace(/[✅✔️🐐🔟®©]/g,'').trim();if(!line)return;
       line=line.replace(/^\W*\d{1,3}\s*[.):\-]?\s*/,'');
       const m=line.match(/^(.*?)\s*[-–—]\s*(.*)$/);
-      let team,market; if(m){team=m[1];market=m[2];} else {team=line;market='';}
-      team=team.replace(/\s{2,}/g,' ').trim(); market=market.replace(/\s{2,}/g,' ').trim();
+      let team,market;if(m){team=m[1];market=m[2];}else{team=line;market='';}
+      team=team.replace(/\s{2,}/g,' ').trim();market=market.replace(/\s{2,}/g,' ').trim();
       if(!team||team.length<2)return;
       if(/^(top|weekend|bookmark|over|under)\b/i.test(team)&&!market)return;
       out.push({team,market:market||'Over 0.5'});
@@ -157,58 +156,69 @@
     return out;
   }
 
+  // ---- deep links (opened from YOUR browser, so bookmakers don't block) ----
+  function link(team){
+    const q=encodeURIComponent(team.trim());
+    switch(bookSel.value){
+      case 'sportybet': return 'https://www.sportybet.com/ng/search?query='+q;
+      case 'bet9ja':    return 'https://sports.bet9ja.com/search?q='+q;
+      case 'msport':    return 'https://www.msport.com/ng/search?keyword='+q;
+      case '1xbet':     return 'https://1xbet.com/en/search?text='+q;
+      case 'betking':   return 'https://www.betking.com/sports/s/search?query='+q;
+      case 'betway':    return 'https://www.betway.com.ng/search?query='+q;
+      case 'google':    return 'https://www.google.com/search?q='+encodeURIComponent(team+' bet next match');
+      default: return '#';
+    }
+  }
+
+  // ---- render ----
   function render(){
-    rowsEl.innerHTML=''; const has=picks.length>0;
-    tbl.hidden=!has; addBtn.hidden=!has; bookBtn.hidden=!has;
+    rowsEl.innerHTML='';const has=picks.length>0;
+    tbl.hidden=!has;stepWrap.hidden=!has;addBtn.hidden=copyBtn.hidden=csvBtn.hidden=!has;
     countEl.textContent=has?picks.length+' picks':'';
     picks.forEach((p,i)=>{
-      const tr=document.createElement('tr');
-      const n=document.createElement('td'); n.className='num'; n.textContent=i+1;
-      const t=document.createElement('td'); const ti=document.createElement('input');
-      ti.value=p.team; ti.oninput=()=>p.team=ti.value; t.appendChild(ti);
-      const mk=document.createElement('td'); const mi=document.createElement('input');
-      mi.value=p.market; mi.oninput=()=>p.market=mi.value; mk.appendChild(mi);
-      const d=document.createElement('td'); const b=document.createElement('button');
-      b.className='del'; b.textContent='✕'; b.onclick=()=>{picks.splice(i,1);render();}; d.appendChild(b);
-      tr.append(n,t,mk,d); rowsEl.appendChild(tr);
+      const tr=document.createElement('tr');if(i<cursor)tr.className='done';
+      const n=document.createElement('td');n.className='num';n.textContent=i+1;
+      const t=document.createElement('td');const ti=document.createElement('input');
+      ti.value=p.team;ti.oninput=()=>{p.team=ti.value;refresh(a,p);};t.appendChild(ti);
+      const mk=document.createElement('td');const mi=document.createElement('input');
+      mi.value=p.market;mi.oninput=()=>p.market=mi.value;mk.appendChild(mi);
+      const act=document.createElement('td');act.className='act';
+      const a=document.createElement('a');a.className='open';a.target='_blank';a.rel='noopener';
+      a.textContent='Open';a.href=link(p.team);
+      const del=document.createElement('button');del.className='del';del.textContent='✕';del.title='Remove';
+      del.onclick=()=>{picks.splice(i,1);if(cursor>picks.length)cursor=picks.length;render();};
+      act.append(a,del);tr.append(n,t,mk,act);rowsEl.appendChild(tr);
     });
+    updateStep();
   }
+  function refresh(a,p){a.href=link(p.team);}
+  function updateStep(){
+    if(cursor>=picks.length){stepBtn.textContent='✓ All opened';stepBtn.disabled=true;
+      stepInfo.textContent=picks.length?'Done — build the slip on the bookmaker and grab the code.':'';}
+    else{stepBtn.disabled=false;const p=picks[cursor];
+      stepBtn.textContent='▶ Open pick #'+(cursor+1)+' — '+(p?p.team:'');
+      stepInfo.textContent=(cursor)+' / '+picks.length+' opened';}
+  }
+  bookSel.addEventListener('change',render);
   addBtn.addEventListener('click',()=>{picks.push({team:'',market:'Over 0.5'});render();});
-
-  bookBtn.addEventListener('click',async()=>{
-    if(!picks.length)return;
-    bookBtn.disabled=true; status.textContent='Building slip on SportyBet… (can take 20–40s)';
-    result.style.display='none';
-    try{
-      const r=await fetch('/api/book',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({picks})});
-      const j=await r.json();
-      if(!r.ok||!j.code){
-        status.textContent='Booking failed: '+(j.error||r.status)+(j.detail?(' — '+j.detail):'');
-        if(j.matched||j.unmatched) showLists(j.matched,j.unmatched);
-        return;
-      }
-      codeEl.textContent=j.code;
-      urlEl.textContent=j.url; openUrl.href=j.url;
-      showLists(j.matched,j.unmatched);
-      result.style.display='block';
-      status.textContent='Done — '+ (j.matched?j.matched.length:0)+' picks booked.';
-    }catch(e){ status.textContent='Booking failed: '+e.message; }
-    finally{ bookBtn.disabled=false; }
+  stepReset.addEventListener('click',()=>{cursor=0;render();});
+  stepBtn.addEventListener('click',()=>{
+    if(cursor>=picks.length)return;
+    window.open(link(picks[cursor].team),'_blank','noopener');
+    cursor++;render();
   });
 
-  function showLists(matched,unmatched){
-    matchedEl.innerHTML = (matched&&matched.length)
-      ? '<b>Booked:</b><br>'+matched.map(m=>`• ${escapeHtml(m.team)} → <code>${escapeHtml(m.event)}</code> — ${escapeHtml(m.pick)} @ ${escapeHtml(String(m.odds||''))}`).join('<br>')
-      : '';
-    unmatchedEl.innerHTML = (unmatched&&unmatched.length)
-      ? '<b>Skipped:</b><br>'+unmatched.map(u=>`• ${escapeHtml(u.team)} (${escapeHtml(u.market||'')}) — ${escapeHtml(u.reason||'no match')}`).join('<br>')
-      : '';
-  }
-  function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-
-  $('copyCode').addEventListener('click',()=>navigator.clipboard.writeText(codeEl.textContent));
-  $('copyUrl').addEventListener('click',()=>navigator.clipboard.writeText(urlEl.textContent));
+  copyBtn.addEventListener('click',()=>{
+    const txt=picks.map((p,i)=>(i+1)+'. '+p.team+(p.market?' - '+p.market:'')).join('\n');
+    navigator.clipboard.writeText(txt).then(()=>status.textContent='Copied '+picks.length+' picks.');
+  });
+  csvBtn.addEventListener('click',()=>{
+    const esc=s=>'"'+String(s).replace(/"/g,'""')+'"';
+    const csv='No,Team,Market\n'+picks.map((p,i)=>[i+1,esc(p.team),esc(p.market)].join(',')).join('\n');
+    const u=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    const a=document.createElement('a');a.href=u;a.download='slip.csv';a.click();URL.revokeObjectURL(u);
+  });
 })();
 </script>
 </body>
